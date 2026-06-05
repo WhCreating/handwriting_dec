@@ -6,7 +6,7 @@ async def main(page: ft.Page):
 
     page.title = "Handwriting Dec."
 
-
+ 
 
 
 ft.run(main)
