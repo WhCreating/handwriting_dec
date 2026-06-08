@@ -3,6 +3,13 @@ import flet as ft
 # Результат от модели
 async def page_result(page: ft.Page, image: str):
 
+    # Назад
+    async def back(e):
+        from gui.gui import gui
+        page.controls.clear()
+        await gui(page)
+
+
     page.add(
         ft.SafeArea(
             content=ft.Container(
@@ -11,7 +18,8 @@ async def page_result(page: ft.Page, image: str):
                         ft.Row(
                             controls=[
                                 back := ft.IconButton(
-                                    icon=ft.Icons.ARROW_BACK_IOS_NEW_ROUNDED
+                                    icon=ft.Icons.ARROW_BACK_IOS_NEW_ROUNDED,
+                                    on_click=back
                                 )
                             ],
                             alignment=ft.MainAxisAlignment.START
