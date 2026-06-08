@@ -2,6 +2,7 @@ import flet as ft
 import flet_camera as fc
 import asyncio
 from dataclasses import dataclass, field
+import chardet
 
 
 async def gui(page: ft.Page):
@@ -48,15 +49,23 @@ async def gui(page: ft.Page):
             await show_error(f"⚠️ Ошибка: {e}")
             page.update()
 
+    # сделать фото
+    async def do_picture(e):
+        try :
+            res = await camera.take_picture()
 
-    page.floating_action_button = ft.IconButton(
-        icon=ft.Icons.CAMERA_ALT_ROUNDED,
-        icon_size=50
-    )
+        except Exception as e:
+            show_error(e)
 
     # Кнопка камеры
+    page.floating_action_button = ft.IconButton(
+        icon=ft.Icons.CAMERA_ALT_ROUNDED,
+        icon_size=50,
+        disabled=False,
+        on_click=do_picture
+    )
+
     page.floating_action_button_location = ft.FloatingActionButtonLocation.CENTER_FLOAT
-    page.floating_action_button.disabled = False
 
     
 
@@ -73,7 +82,6 @@ async def gui(page: ft.Page):
             ),
         )
     )
-    
     
     grid = ft.Container(
         content=ft.Column(
