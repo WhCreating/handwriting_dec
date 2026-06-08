@@ -2,7 +2,7 @@ import flet as ft
 import flet_camera as fc
 import asyncio
 from dataclasses import dataclass, field
-import chardet
+from base64 import b64encode
 
 
 async def gui(page: ft.Page):
@@ -53,9 +53,29 @@ async def gui(page: ft.Page):
     async def do_picture(e):
         try :
             res = await camera.take_picture()
-
+            await preview_picture(b64encode(res).decode(encoding="utf-8"))
+            
         except Exception as e:
-            show_error(e)
+            await show_error(e)
+    
+    async def preview_picture(image: str):
+        try :
+            preview_image = ft.AlertDialog(
+                content=ft.Image(
+                    src=image
+                ),
+                modal=True,
+                actions=[
+                    ft.TextButton("Продолжить", on_click=lambda e: page.pop_dialog()),
+                    ft.TextButton("переснять", on_click=lambda e: page.pop_dialog()),
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+                on_dismiss=lambda e: print("Modal dialog dismissed!"),
+            )
+
+            page.show_dialog(preview_image)
+        except Exception as e:
+            await show_error(e)
 
     # Кнопка камеры
     page.floating_action_button = ft.IconButton(
