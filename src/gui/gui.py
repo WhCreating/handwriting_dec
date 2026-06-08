@@ -5,6 +5,19 @@ from dataclasses import dataclass, field
 
 
 async def gui(page: ft.Page):
+
+
+    # Окно ошибки
+    async def show_error(text: str):
+        error_window = ft.AlertDialog(
+            title=ft.Text("Ошибка"),
+            content=ft.Text(text),
+            alignment=ft.Alignment.CENTER,
+            title_padding=ft.Padding.all(25),
+        )
+
+        page.show_dialog(error_window)
+
     # Функция с инициализацией камеры
     async def init_back_camera():
         try:
@@ -16,6 +29,7 @@ async def gui(page: ft.Page):
                 (c for c in cameras if c.lens_direction == fc.CameraLensDirection.BACK),
                 None,
             )
+            
 
             if back_cam:
                 # Инициализируем камеру
@@ -25,13 +39,26 @@ async def gui(page: ft.Page):
                     enable_audio=False,  # при необходимости включите
                 )
                 print(f"✅ Задняя камера: {back_cam.name}")
+                page.floating_action_button.disabled = False
                 page.update()
             else:
-                print("❌ Задняя камера не найдена")
+                await show_error("❌ Задняя камера не найдена")
                 page.update()
         except Exception as e:
-            print(f"⚠️ Ошибка: {e}")
+            await show_error(f"⚠️ Ошибка: {e}")
             page.update()
+
+
+    page.floating_action_button = ft.IconButton(
+        icon=ft.Icons.CAMERA_ALT_ROUNDED,
+        icon_size=50
+    )
+
+    # Кнопка камеры
+    page.floating_action_button_location = ft.FloatingActionButtonLocation.CENTER_FLOAT
+    page.floating_action_button.disabled = False
+
+    
 
     # Объект с камерой
     camera = fc.Camera(
@@ -53,12 +80,13 @@ async def gui(page: ft.Page):
             controls=[
                 ft.Container(
                     content=camera,
-                    expand=True
-                )
+                    expand=True,
+                    height=650,
+                    alignment=ft.Alignment.CENTER
+                ),
             ]
         )
     )
-
 
 
     page.add(
