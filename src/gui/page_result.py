@@ -17,7 +17,7 @@ async def page_result(page: ft.Page, image: str):
                     controls=[
                         ft.Row(
                             controls=[
-                                back := ft.IconButton(
+                                ft.IconButton(
                                     icon=ft.Icons.ARROW_BACK_IOS_NEW_ROUNDED,
                                     on_click=back
                                 )
@@ -27,7 +27,7 @@ async def page_result(page: ft.Page, image: str):
                         ft.SelectionArea(
                             ft.Text(
                                 value="Привет, тут будет результат",
-                                text_align=ft.TextAlign.CENTER
+                                size=20
                             )
                         )
                     ]

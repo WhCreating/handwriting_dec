@@ -71,7 +71,8 @@ async def gui(page: ft.Page):
         try :
             preview_image = ft.AlertDialog(
                 content=ft.Image(
-                    src=image
+                    src=image,
+                    border_radius=20
                 ),
                 modal=True,
                 actions=[
@@ -123,7 +124,9 @@ async def gui(page: ft.Page):
                             content=camera,
                             expand=True,
                             height=650,
-                            alignment=ft.Alignment.CENTER
+                            alignment=ft.Alignment.CENTER,
+                            border_radius=20
+
                         ),
                     ]
                 )
