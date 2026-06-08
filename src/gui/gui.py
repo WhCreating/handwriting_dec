@@ -3,7 +3,7 @@ import flet_camera as fc
 import asyncio
 from dataclasses import dataclass, field
 from base64 import b64encode
-
+from gui.page_result import page_result
 
 async def gui(page: ft.Page):
 
@@ -58,7 +58,16 @@ async def gui(page: ft.Page):
         except Exception as e:
             await show_error(e)
     
+    # Показать фото
     async def preview_picture(image: str):
+        # Сменить страницу
+        async def change_page(e):
+            page.floating_action_button = None
+            page.controls.clear()
+            page.pop_dialog()
+            await page_result(page, image)
+
+
         try :
             preview_image = ft.AlertDialog(
                 content=ft.Image(
@@ -66,7 +75,7 @@ async def gui(page: ft.Page):
                 ),
                 modal=True,
                 actions=[
-                    ft.TextButton("Продолжить", on_click=lambda e: page.pop_dialog()),
+                    ft.TextButton("Продолжить", on_click=change_page),
                     ft.TextButton("переснять", on_click=lambda e: page.pop_dialog()),
                 ],
                 actions_alignment=ft.MainAxisAlignment.END,
@@ -103,23 +112,22 @@ async def gui(page: ft.Page):
         )
     )
     
-    grid = ft.Container(
-        content=ft.Column(
-            controls=[
-                ft.Container(
-                    content=camera,
-                    expand=True,
-                    height=650,
-                    alignment=ft.Alignment.CENTER
-                ),
-            ]
-        )
-    )
 
 
     page.add(
         ft.SafeArea(
-            content=grid
+            content=ft.Container(
+                content=ft.Column(
+                    controls=[
+                        ft.Container(
+                            content=camera,
+                            expand=True,
+                            height=650,
+                            alignment=ft.Alignment.CENTER
+                        ),
+                    ]
+                )
+            )
         )
     )
 
