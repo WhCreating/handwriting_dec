@@ -1,7 +1,12 @@
 import flet as ft
+from back.result_get import ModelEdgeImpulse
 
 # Результат от модели
 async def page_result(page: ft.Page, image: str):
+
+    model = ModelEdgeImpulse(1005066, "ei_fdd9565b08dfe03ac3e1cd64404942822ae99542b355b3b4")
+    samp = model.upload_image_base64(image)
+    model.classify(samp)
 
     # Назад
     async def back(e):
@@ -26,7 +31,7 @@ async def page_result(page: ft.Page, image: str):
                         ),
                         ft.SelectionArea(
                             ft.Text(
-                                value="Привет, тут будет результат",
+                                value=model.get_result(),
                                 size=20
                             )
                         )
