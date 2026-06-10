@@ -1,8 +1,29 @@
 import flet as ft
 from back.result_get import ModelEdgeImpulse
+import threading
+import requests
 
 # Результат от модели
 async def page_result(page: ft.Page, image: str):
+
+    def apply_result():
+        try :
+            model = ModelEdgeImpulse()
+            samp = model.upload_image_base64(image)
+            model.classify(samp)
+
+
+            prgrs_bar.visible = False
+            area.visible = True
+            area.content.value = model.get_result()
+
+            page.update()
+        except Exception:
+            prgrs_bar.visible = False
+            area.visible = True
+            area.content.value = "Ошибка подключения"
+
+            page.update()
 
     # Назад
     async def back(e):
@@ -25,13 +46,12 @@ async def page_result(page: ft.Page, image: str):
                             ],
                             alignment=ft.MainAxisAlignment.START
                         ),
-                        prgrs_bar := ft.ProgressBar(visible=False),
+                        prgrs_bar := ft.ProgressRing(visible=False),
                         area := ft.SelectionArea(
                             ft.Text(
-                                value=model.get_result(),
-                                size=20,
-                                visible=False
-                            )
+                                size=20
+                            ),
+                            visible=False
                         )
                     ]
                 ),
@@ -40,16 +60,9 @@ async def page_result(page: ft.Page, image: str):
         )
     )
 
-
     prgrs_bar.visible = True
     page.update()
 
-    model = ModelEdgeImpulse()
-    samp = model.upload_image_base64(image)
-    model.classify(samp)
 
-
-    prgrs_bar.visible = False
-    area.visible = True
-    page.update()
+    threading.Thread(target=apply_result, daemon=True).start()
     

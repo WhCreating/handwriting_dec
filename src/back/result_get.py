@@ -1,6 +1,6 @@
 import requests
 import base64
-import time
+import aiohttp
 
 
 
@@ -10,24 +10,22 @@ class ModelEdgeImpulse:
         self.API_KEY = "ei_fdd9565b08dfe03ac3e1cd64404942822ae99542b355b3b4"
 
     def upload_image_base64(self, base64_string: str) -> int:
+
         image_data = base64.b64decode(base64_string)
 
         url = "https://ingestion.edgeimpulse.com/api/testing/files"
         headers = {"x-api-key": self.API_KEY}
 
         files = {"data": ("image.png", image_data, "image/png")}
+        
         res = requests.post(url, headers=headers, files=files, timeout=30)
-
         res.raise_for_status()
 
         return res.json()["files"][0]["sampleId"]
 
-    def classify(self, sample_id: int) -> dict:
-        # Пробуем без /v2/
+    async def classify(self, sample_id: int) -> dict:
         url = f"https://studio.edgeimpulse.com/v1/api/{self.PROJECT_ID}/classify/{sample_id}"
         headers = {"x-api-key": self.API_KEY}
-
-        time.sleep(3)
 
         res = requests.get(url, headers=headers, timeout=60)
         res.raise_for_status()
