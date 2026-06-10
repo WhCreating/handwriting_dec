@@ -1,12 +1,39 @@
 import flet as ft
 import flet_camera as fc
+import flet_ads as fta
 import asyncio
 from dataclasses import dataclass, field
 from base64 import b64encode
 from gui.page_result import page_result
 
+
+ids = {
+    ft.PagePlatform.ANDROID: {
+        "banner": "ca-app-pub-3940256099942544/9214589741",
+        "interstitial": "ca-app-pub-3940256099942544/1033173712",
+    },
+    ft.PagePlatform.IOS: {
+        "banner": "ca-app-pub-3940256099942544/2435281174",
+        "interstitial": "ca-app-pub-3940256099942544/3986624511",
+    },
+}
+
 async def gui(page: ft.Page):
 
+    # Рекламный баннер
+    def get_new_banner_ad() -> fta.BannerAd:
+        return fta.BannerAd(
+            unit_id=ids[page.platform]["banner"],
+            width=320,
+            height=50,
+            on_click=lambda e: print("BannerAd clicked"),
+            on_load=lambda e: print("BannerAd loaded"),
+            on_error=lambda e: print("BannerAd error", e.data),
+            on_open=lambda e: print("BannerAd opened"),
+            on_close=lambda e: print("BannerAd closed"),
+            on_impression=lambda e: print("BannerAd impression"),
+            on_will_dismiss=lambda e: print("BannerAd will dismiss"),
+        )
 
     # Окно ошибки
     async def show_error(text: str):
@@ -40,7 +67,7 @@ async def gui(page: ft.Page):
                     enable_audio=False,  # при необходимости включите
                 )
                 print(f"✅ Задняя камера: {back_cam.name}")
-                page.floating_action_button.disabled = False
+                button_camera.disabled = False
                 page.update()
             else:
                 await show_error("❌ Задняя камера не найдена")
@@ -56,13 +83,12 @@ async def gui(page: ft.Page):
             await preview_picture(b64encode(res).decode(encoding="utf-8"))
             
         except Exception as e:
-            await show_error(e)
+            await show_error(str(e))
     
     # Показать фото
     async def preview_picture(image: str):
         # Сменить страницу
         async def change_page(e):
-            page.floating_action_button = None
             page.controls.clear()
             page.pop_dialog()
             await page_result(page, image)
@@ -85,19 +111,16 @@ async def gui(page: ft.Page):
 
             page.show_dialog(preview_image)
         except Exception as e:
-            await show_error(e)
+            await show_error(str(e))
+
 
     # Кнопка камеры
-    page.floating_action_button = ft.IconButton(
+    button_camera = ft.IconButton(
         icon=ft.Icons.CAMERA_ALT_ROUNDED,
         icon_size=50,
-        disabled=False,
+        disabled=True,
         on_click=do_picture
     )
-
-    page.floating_action_button_location = ft.FloatingActionButtonLocation.CENTER_FLOAT
-
-    
 
     # Объект с камерой
     camera = fc.Camera(
@@ -123,15 +146,21 @@ async def gui(page: ft.Page):
                         ft.Container(
                             content=camera,
                             expand=True,
-                            height=650,
+                            height=620,
                             alignment=ft.Alignment.CENTER,
                             border_radius=20
 
                         ),
+                        ft.Row(
+                            controls=[
+                                button_camera
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER
+                        )
                     ]
                 )
             )
-        )
+        ),
     )
 
     await init_back_camera()

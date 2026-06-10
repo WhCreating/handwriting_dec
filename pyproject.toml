@@ -8,7 +8,8 @@ authors = [
     { name = "Flet developer", email = "you@example.com" }
 ]
 dependencies = [
-    "flet>=0.85.2"
+    "flet>=0.85.3",
+    "flet_ads>=0.85.3"
 ]
 
 [dependency-groups]
@@ -27,3 +28,9 @@ permissions = ["camera", "microphone"]
 
 [tool.flet.app]
 path = "src"
+
+[tool.flet.ios.info]
+GADApplicationIdentifier = "ca-app-pub-3940256099942544~3347511713"
+
+[tool.flet.android.meta_data]
+"com.google.android.gms.ads.APPLICATION_ID" = "ca-app-pub-3940256099942544~3347511713"
