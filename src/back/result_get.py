@@ -35,7 +35,6 @@ class ModelEdgeImpulse:
 
     def get_result(self):
         return self.result['classifications'][0]["result"]
-# --- Использование ---
 
 if __name__ == "__main__":
     mod = ModelEdgeImpulse()
