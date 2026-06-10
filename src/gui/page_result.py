@@ -4,10 +4,6 @@ from back.result_get import ModelEdgeImpulse
 # Результат от модели
 async def page_result(page: ft.Page, image: str):
 
-    model = ModelEdgeImpulse()
-    samp = model.upload_image_base64(image)
-    model.classify(samp)
-
     # Назад
     async def back(e):
         from gui.gui import gui
@@ -29,10 +25,12 @@ async def page_result(page: ft.Page, image: str):
                             ],
                             alignment=ft.MainAxisAlignment.START
                         ),
-                        ft.SelectionArea(
+                        prgrs_bar := ft.ProgressBar(visible=False),
+                        area := ft.SelectionArea(
                             ft.Text(
                                 value=model.get_result(),
-                                size=20
+                                size=20,
+                                visible=False
                             )
                         )
                     ]
@@ -41,3 +39,17 @@ async def page_result(page: ft.Page, image: str):
             )
         )
     )
+
+
+    prgrs_bar.visible = True
+    page.update()
+
+    model = ModelEdgeImpulse()
+    samp = model.upload_image_base64(image)
+    model.classify(samp)
+
+
+    prgrs_bar.visible = False
+    area.visible = True
+    page.update()
+    
