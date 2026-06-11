@@ -5,8 +5,9 @@ import asyncio
 from dataclasses import dataclass, field
 from base64 import b64encode
 from gui.page_result import page_result
+from exceptions.error_gui import show_error
 
-
+# Тестовые ключи для рекламы
 ids = {
     ft.PagePlatform.ANDROID: {
         "banner": "ca-app-pub-3940256099942544/9214589741",
@@ -34,17 +35,6 @@ async def gui(page: ft.Page):
             on_impression=lambda e: print("BannerAd impression"),
             on_will_dismiss=lambda e: print("BannerAd will dismiss"),
         )
-
-    # Окно ошибки
-    async def show_error(text: str):
-        error_window = ft.AlertDialog(
-            title=ft.Text("Ошибка"),
-            content=ft.Text(text),
-            alignment=ft.Alignment.CENTER,
-            title_padding=ft.Padding.all(25),
-        )
-
-        page.show_dialog(error_window)
 
     # Функция с инициализацией камеры
     async def init_back_camera():
