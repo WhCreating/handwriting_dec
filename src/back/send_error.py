@@ -97,7 +97,8 @@ class SendError:
                         )
                     ],
                 ),
-                height=300
+                height=200,
+                alignment=ft.Alignment.CENTER
             ),
             actions=[
                 ft.TextButton(

@@ -48,7 +48,7 @@ async def gui(page: ft.Page):
                 None,
             )
             
-            raise Exception("ошибка1")
+            #raise Exception("ошибка1")
 
             if back_cam:
                 # Инициализируем камеру
