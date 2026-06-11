@@ -1,27 +1,35 @@
 import flet as ft
 from back.result_get import ModelEdgeImpulse
 import threading
+from exceptions.error_gui import show_error
 import requests
+import asyncio
 
 # Результат от модели
 async def page_result(page: ft.Page, image: str):
 
-    def apply_result():
+    async def apply_result():
         try :
-            model = ModelEdgeImpulse()
-            samp = model.upload_image_base64(image)
-            model.classify(samp)
+            
+            def blocking():
+                model = ModelEdgeImpulse()
+                samp = model.upload_image_base64(image)
+                model.classify(samp)
+                return model.get_result()
+
+            results = await asyncio.to_thread(blocking)
 
 
             prgrs_bar.visible = False
             area.visible = True
-            area.content.value = model.get_result()
+            area.content.value = results
 
             page.update()
-        except Exception:
+        except Exception as ex:
             prgrs_bar.visible = False
             area.visible = True
             area.content.value = "Ошибка подключения"
+            await show_error(str(ex), page)
 
             page.update()
 
@@ -64,5 +72,6 @@ async def page_result(page: ft.Page, image: str):
     page.update()
 
 
-    threading.Thread(target=apply_result, daemon=True).start()
+    #threading.Thread(target=apply_result, daemon=True).start()
+    await apply_result()
     

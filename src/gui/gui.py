@@ -60,10 +60,10 @@ async def gui(page: ft.Page):
                 button_camera.disabled = False
                 page.update()
             else:
-                await show_error("❌ Задняя камера не найдена")
+                await show_error("❌ Задняя камера не найдена", page)
                 page.update()
         except Exception as e:
-            await show_error(f"⚠️ Ошибка: {e}")
+            await show_error(f"⚠️ Ошибка: {e}", page)
             page.update()
 
     # сделать фото
@@ -73,7 +73,7 @@ async def gui(page: ft.Page):
             await preview_picture(b64encode(res).decode(encoding="utf-8"))
             
         except Exception as e:
-            await show_error(str(e))
+            await show_error(str(e), page)
     
     # Показать фото
     async def preview_picture(image: str):
@@ -82,6 +82,7 @@ async def gui(page: ft.Page):
             page.controls.clear()
             page.pop_dialog()
             await page_result(page, image)
+        
 
 
         try :
@@ -101,7 +102,7 @@ async def gui(page: ft.Page):
 
             page.show_dialog(preview_image)
         except Exception as e:
-            await show_error(str(e))
+            await show_error(str(e), page)
 
 
     # Кнопка камеры

@@ -1,13 +1,15 @@
 import requests
 import base64
 import aiohttp
+from environs import Env
 
-
+env = Env()
+env.read_env(".env")
 
 class ModelEdgeImpulse:
     def __init__(self):
-        self.PROJECT_ID = 1005066
-        self.API_KEY = "ei_fdd9565b08dfe03ac3e1cd64404942822ae99542b355b3b4"
+        self.PROJECT_ID = env.int("PROJECT_ID")
+        self.API_KEY = env("API_KEY")
 
     def upload_image_base64(self, base64_string: str) -> int:
 
