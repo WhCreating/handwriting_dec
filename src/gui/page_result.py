@@ -22,7 +22,7 @@ async def page_result(page: ft.Page, image: str):
 
             prgrs_bar.visible = False
             area.visible = True
-            area.content.value = results
+            area.content.value = result
 
             page.update()
         except Exception as ex:
